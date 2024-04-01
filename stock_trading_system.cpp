@@ -134,8 +134,8 @@ public:
             cout<<"Total cost: $"<<stock->get_price()*req;
         }
         else{
-            cout<<"Stock not available: ";
-            exit(1);
+            cout<<"Stock not available. Try again.: "<<endl;
+            buy();
         }
         return buy_stock;
     }
@@ -148,19 +148,30 @@ public:
         cin>>sell_stock;
         cout<<"Enter quantity: ";
         cin>>n;
-        Trade *stock = find_stock(sell_stock);
-        update_quantity(sell_stock, stock->get_quantity()+n);
+        if(find_stock(sell_stock)){
+            Trade *stock = find_stock(sell_stock);
+            update_quantity(sell_stock, stock->get_quantity()+n);
+        }
+        else{
+            float new_price;
+            cout<<"Stock not in database. Enter price for this stock: ";
+            cin>>new_price;
+            Trade* new_stock = new Trade(sell_stock, new_price, n);
+            add_stock(new_stock);
+        }
         cout<<"Sold! Thank you for selling!"<<endl;
         return sell_stock;
     }
 
 };
 
-
+//
+//
+//
 
 int main(){
+//Create a portfolio object and populate with some stock objects
     Portfolio prtf;
-// Create a portfolio object and populate with some stock objects
     Trade* stock1 = new Trade("MSFT", 428.86, 45);
     Trade* stock2 = new Trade("AMZN", 178.94, 20);
     Trade* stock3 = new Trade("TSLA", 171.20, 80);
@@ -171,7 +182,6 @@ int main(){
     prtf.add_stock(stock2);
     prtf.add_stock(stock3);
     prtf.add_stock(stock4);
-
     cout<<"Initial stock Prices"<<endl;
     prtf.display_portfolio();
 
@@ -208,6 +218,6 @@ int main(){
     
     if(action==1) cout<<"\nAfter buying "<<item<<endl;
     else cout<<"\nAfter selling "<<item<<endl;
-    prtf.display_portfolio();;
+    prtf.display_portfolio();
     return 0;
 }
